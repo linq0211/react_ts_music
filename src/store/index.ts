@@ -1,14 +1,10 @@
+import recommendReducer from '@/views/discover/views/recommend/store'
 import { configureStore } from '@reduxjs/toolkit'
-import discoverReducer from './modules/discover'
-import mineReducer from './modules/mine'
-import focusReducer from './modules/focus'
 import { shallowEqual, TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
 const store = configureStore({
   reducer: {
-    discoverReducer,
-    focusReducer,
-    mineReducer
+    recommend: recommendReducer
   }
 })
 
