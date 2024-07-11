@@ -1,12 +1,6 @@
 import styled from 'styled-components'
 
-interface IProps {
-  bgImg: string
-}
-
-export const BannerWrapper = styled.div<IProps>`
-  background: url(${(props) => props.bgImg}) center center/ 6000px;
-
+export const BannerWrapper = styled.div`
   .banner {
     height: 270px;
     display: flex;

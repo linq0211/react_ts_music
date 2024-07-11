@@ -44,13 +44,17 @@ const TopBanner: FC<IProps> = () => {
     setCurrentIndex(newIndex)
   }
 
-  let bgImgUrl = banners[currentIndex]?.imageUrl
-  if (bgImgUrl) {
-    bgImgUrl = bgImgUrl + '?imageView&blur=40x20'
+  let bgImgUrl
+  if (currentIndex >= 0 && banners?.length > 0) {
+    bgImgUrl = banners[currentIndex].imageUrl + '?imageView&blur=40x20'
   }
 
   return (
-    <BannerWrapper bgImg={bgImgUrl}>
+    <BannerWrapper
+      style={{
+        background: `url('${bgImgUrl}') center center / 6000px`
+      }}
+    >
       <div className="banner wrap-v2">
         <BannerLeft>
           <Carousel
@@ -70,7 +74,7 @@ const TopBanner: FC<IProps> = () => {
             })}
           </Carousel>
           <ul className="dots">
-            {banners.map((item, index) => {
+            {banners?.map((item, index) => {
               return (
                 <li key={item.imageUrl} onClick={() => dotsClickHandler(index)}>
                   <span
