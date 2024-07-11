@@ -7,6 +7,7 @@ export const RecommendWrapper = styled.div`
     display: flex;
 
     > .left {
+      box-sizing: border-box;
       padding: 20px;
       width: 729px;
     }

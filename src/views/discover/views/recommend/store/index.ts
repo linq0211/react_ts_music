@@ -32,15 +32,15 @@ export const fetchHotRecommendData = createAsyncThunk(
 )
 
 export const fetchNewAlbumData = createAsyncThunk(
-  'recommend/hotRecommend',
+  'recommend/newAlbum',
   async (payload, { dispatch }) => {
     const res = await getNewAlbum()
-    dispatch(changeNewAlbumAction(res.result))
+    dispatch(changeNewAlbumAction(res.albums))
   }
 )
 
 export const fetchPlaylistDetailData = createAsyncThunk(
-  'recommend/hotRecommend',
+  'recommend/playlistDetail',
   async (id: number, { dispatch }) => {
     const res = await getPlaylistDetail(id)
     dispatch(changePlayListAction(res.result))
