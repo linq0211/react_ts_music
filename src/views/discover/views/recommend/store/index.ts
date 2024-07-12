@@ -5,47 +5,49 @@ interface IState {
   banners: any[]
   hotRecommend: any[]
   newAlbum: any[]
-  playList: any[]
+
+  // bsRanking: any[]
+  // xgRanking: any[]
+  // ycRanking: any[]
+
+  rankings: any[]
 }
 
 const initialState: IState = {
   banners: [],
   hotRecommend: [],
   newAlbum: [],
-  playList: []
+
+  // 三个榜单单独管理
+  // bsRanking: [],
+  // xgRanking: [],
+  // ycRanking: []
+
+  // 三个榜单一个数组统一管理
+  rankings: []
 }
 
-export const fetchBannerData = createAsyncThunk(
-  'recommend/banner',
-  async (payload, { dispatch }) => {
-    const res = await getBannerData()
-    dispatch(changeBannersAction(res.banners))
-  }
-)
+export const fetchRecommendData = createAsyncThunk('fetch/recommend', (payload, { dispatch }) => {
+  getBannerData().then((res) => dispatch(changeBannersAction(res.banners)))
+  getHotRecommend(8).then((res) => dispatch(changeHotRecommendAction(res.result)))
+  getNewAlbum().then((res) => dispatch(changeNewAlbumAction(res.albums)))
 
-export const fetchHotRecommendData = createAsyncThunk(
-  'recommend/hotRecommend',
-  async (limit: number, { dispatch }) => {
-    const res = await getHotRecommend(limit)
-    dispatch(changeHotRecommendAction(res.result))
-  }
-)
+  // getPlaylistDetail(19723756).then((res) => dispatch(changeBsRankingAction(res.playlist)))
+  // getPlaylistDetail(3779629).then((res) => dispatch(changeXgRankingAction(res.playlist)))
+  // getPlaylistDetail(2884035).then((res) => dispatch(changeYcRankingAction(res.playlist)))
 
-export const fetchNewAlbumData = createAsyncThunk(
-  'recommend/newAlbum',
-  async (payload, { dispatch }) => {
-    const res = await getNewAlbum()
-    dispatch(changeNewAlbumAction(res.albums))
+  const ids = [19723756, 3779629, 2884035]
+  // 定义存放promis的数组
+  const results: Promise<any>[] = []
+  for (const id of ids) {
+    // axios请求默认返回一个promis
+    results.push(getPlaylistDetail(id))
   }
-)
-
-export const fetchPlaylistDetailData = createAsyncThunk(
-  'recommend/playlistDetail',
-  async (id: number, { dispatch }) => {
-    const res = await getPlaylistDetail(id)
-    dispatch(changePlayListAction(res.result))
-  }
-)
+  Promise.all(results).then((res) => {
+    const playlists = res.map((item) => item.playlist)
+    dispatch(changeRankingsAction(playlists))
+  })
+})
 
 const recommendSlice = createSlice({
   name: 'discover',
@@ -60,8 +62,19 @@ const recommendSlice = createSlice({
     changeNewAlbumAction(state, { payload }) {
       state.newAlbum = payload
     },
-    changePlayListAction(state, { payload }) {
-      state.playList = payload
+
+    // changeBsRankingAction(state, { payload }) {
+    //   state.bsRanking = payload
+    // },
+    // changeXgRankingAction(state, { payload }) {
+    //   state.xgRanking = payload
+    // },
+    // changeYcRankingAction(state, { payload }) {
+    //   state.ycRanking = payload
+    // }
+
+    changeRankingsAction(state, { payload }) {
+      state.rankings = payload
     }
   }
 })
@@ -70,6 +83,6 @@ export const {
   changeBannersAction,
   changeHotRecommendAction,
   changeNewAlbumAction,
-  changePlayListAction
+  changeRankingsAction
 } = recommendSlice.actions
 export default recommendSlice.reducer
